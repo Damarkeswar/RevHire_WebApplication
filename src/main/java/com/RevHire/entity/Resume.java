@@ -1,22 +1,16 @@
 package com.RevHire.entity;
 
-import java.util.List;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
-@Table(name = "resumes")
-@Getter @Setter
+@Table(name = "RESUMES")
+@Getter
+@Setter
 public class Resume {
 
     @Id
@@ -24,21 +18,23 @@ public class Resume {
     @Column(name = "resume_id")
     private Long resumeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seeker_id", nullable = false)
+    @JsonIgnore   // Prevent infinite recursion
     private JobSeekerProfile seeker;
 
+    @Column(length = 1000)
     private String objective;
 
-    @OneToMany(mappedBy = "resume")
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ResumeEducation> educations;
 
-    @OneToMany(mappedBy = "resume")
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ResumeExperience> experiences;
 
-    @OneToMany(mappedBy = "resume")
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ResumeSkill> skills;
 
-    @OneToMany(mappedBy = "resume")
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ResumeFile> files;
 }

@@ -1,5 +1,6 @@
 package com.RevHire.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "employer_profiles")
+@Table(name = "EMPLOYER_PROFILES")
 @Getter
 @Setter
 public class EmployerProfile {
@@ -25,7 +26,9 @@ public class EmployerProfile {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "company_name")
     private String companyName;
+
     private String industry;
     private Integer companySize;
 
@@ -34,4 +37,6 @@ public class EmployerProfile {
 
     private String website;
     private String location;
+
+
 }

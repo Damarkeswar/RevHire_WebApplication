@@ -10,9 +10,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
-@Table(name = "favorite_jobs")
+@Table(name = "FAVORITE_JOBS")
 @Getter @Setter
 public class FavoriteJob {
 

@@ -1,5 +1,6 @@
 package com.RevHire.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "resume_experience")
+@Table(name = "RESUME_EXPERIENCE")
 @Getter @Setter
 public class ResumeExperience {
 
@@ -24,9 +25,11 @@ public class ResumeExperience {
 
     @ManyToOne
     @JoinColumn(name = "resume_id", nullable = false)
+    @JsonIgnore
     private Resume resume;
 
     @Column(name = "company_name")
+    @JsonIgnore
     private String companyName;
 
     private String role;

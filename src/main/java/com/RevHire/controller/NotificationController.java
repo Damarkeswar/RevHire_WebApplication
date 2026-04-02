@@ -1,24 +1,53 @@
 package com.RevHire.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.RevHire.dto.NotificationDTO;
+import com.RevHire.service.NotificationService;
+
+import jakarta.servlet.http.HttpSession;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.RevHire.service.NotificationService;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Controller
 @RequestMapping("/notifications")
+@RequiredArgsConstructor
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    private static final Logger logger = LogManager.getLogger(NotificationController.class);
 
-    @GetMapping("/{userId}")
-    public String getNotifications(@PathVariable Long userId, Model model) {
+    private final NotificationService notificationService;
 
-        model.addAttribute("notifications", notificationService.getUserNotifications(userId));
+    @GetMapping("/notification")
+    public String showNotificationsPage(HttpSession session) {
+        logger.info("Opening notifications page");
+
+        if (session.getAttribute("userId") == null) {
+            logger.warn("Unauthorized attempt to access notifications page");
+            return "redirect:/auth/login";
+        }
 
         return "notifications";
+    }
+
+    @GetMapping("/api/{userId}")
+    @ResponseBody
+    public List<NotificationDTO> getNotifications(@PathVariable Long userId) {
+        logger.info("Fetching notifications for userId {}", userId);
+        return notificationService.getUserNotifications(userId);
+    }
+
+    @PutMapping("/api/{id}/read")
+    @ResponseBody
+    public ResponseEntity<?> markRead(@PathVariable Long id) {
+        logger.info("Marking notification {} as read", id);
+        notificationService.markAsRead(id);
+        return ResponseEntity.ok().build();
     }
 }

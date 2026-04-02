@@ -1,22 +1,17 @@
 package com.RevHire.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.math.BigDecimal;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "jobs")
+@Table(name = "JOBS")
 @Getter @Setter
 public class Job {
 
@@ -30,33 +25,43 @@ public class Job {
     private EmployerProfile employer;
 
     private String title;
-
-    @Lob
     private String description;
-
-    @Column(name = "experience_required")
     private Integer experienceRequired;
-
-    @Column(name = "education_required")
     private String educationRequired;
-
     private String location;
 
-    @Column(name = "salary_min")
-    private Double salaryMin;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal salaryMin;
 
-    @Column(name = "salary_max")
-    private Double salaryMax;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal salaryMax;
 
-    @Column(name = "job_type")
     private String jobType;
-
     private Integer openings;
     private String status;
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<JobSkill> skills;
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Application> applications;
+
+    @OneToMany(mappedBy = "job",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<FavoriteJob> favoriteJobs;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    private Boolean active;
+
 }
